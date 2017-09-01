@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="js/script.js"></script>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			ul,li{
+				list-style: none;
+			}
+			ul{
+				width: 1060px;
+				border: 1px solid royalblue;
+				overflow: hidden;
+				margin: 0 auto;
+			}
+			.list{
+				float:left;
+				width: 245px;
+				margin: 10px;
+			}
+			li{
+				min-height: 20px;
+			}
+		</style>
+		<script>
+			window.onload=function(){
+				var oUl=document.getElementById("ul");
+				var oList=oUl.getElementsByTagName('li');
+				all();
+				/*加载数据*/
+				window.onscroll=function(){ //档页面发生滚动时触发次事件
+					var iS=document.documentElement.scrollTop||document.body.scrollTop;
+					var iH=document.documentElement.clientHeight;
+					var iT=iS+iH;
+					var minH=parseInt(getStyle(oList[getMin()],'height'));
+					if(iT>minH){
+						all();
+					}
+				}
+				function all(){
+			ajax_get('new_file.json',function(data){
+               	var oData=JSON.parse(data);
+               	console.log(oData);
+               	for(var i=0;i<oData.length;i++){
+               		var oImg=document.createElement("img");
+               		oImg.src=oData[i].src;
+               		document.body.appendChild(oImg)
+               		var w=parseInt(oData[i].width);
+               		var h=parseInt(oData[i].height);
+               		var iW=245;
+               		var iH=iW*(h/w);
+               		oImg.style.width=iW+'px';
+               		oImg.style.height=iH+'px';
+               		oList[getMin()].appendChild(oImg);
+               	};
+           });
+	};
+               /*求li最小高度*/
+              function getMin(){
+              	var index=0;//假设第0个位置就是li最小高度
+              	var minHeight=parseInt(getStyle(oList[index],'height'));
+              	for(var i=0;i<oList.length;i++){
+              		if(parseInt(getStyle(oList[i],'height'))<minHeight){
+              			minHeight=parseInt(getStyle(oList[i],'height'));
+              			index=i;
+              		}
+              	}
+              	return index;
+        }
+            //getMin();  
+}
+		</script>
+	</head>
+	<body>
+		<ul id="ul">
+			<li class="list"></li>
+			<li class="list"></li>
+			<li class="list"></li>
+			<li class="list"></li>
+		</ul>
+	</body>
+</html>
